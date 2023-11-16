@@ -14,7 +14,7 @@ SRCS		= ft_printf.c ft_putchar.c ft_putexa.c ft_putnbr.c ft_putvoid.c
 
 OBJS		= $(SRCS:.c=.o)
 
-NAME		= ft_printf.a
+NAME		= libftprintf.a
 CC			= gcc
 CFLAGS		= -Wall -Wextra -Werror
 LIBC		= ar rcs
