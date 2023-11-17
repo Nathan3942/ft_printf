@@ -14,19 +14,40 @@
 
 static size_t	putvoid(const unsigned long nb)
 {
+	int	i;
+
+	i = 0;
 	if (nb / 16)
 		return (putvoid(nb / 16) + putvoid(nb % 16));
 	else if (!(nb / 10))
-		ft_putchar(nb + '0');
+	{
+		i = ft_putchar(nb + '0');
+		if (i < 0)
+			return (-100);
+		else
+			return (i);
+	}
 	else
-		ft_putchar((char)nb - 10 + 'a');
-	return (1);
+	{
+		i = ft_putchar((char)nb - 10 + 'a');
+		if (i < 0)
+			return (-100);
+		else
+			return (i);
+	}
 }
 
 size_t	ft_putvoid(void *adress)
 {
+	int	temp;
+
 	if (!adress)
-		return (0);
-	ft_putstr("0x");
-	return (2 + putvoid((unsigned long)adress));
+		return (ft_putstr("0x0"));
+	if (ft_putstr("0x") < 0)
+		return (-1);
+	temp = putvoid((unsigned long)adress);
+	if (temp < 0)
+		return (-1);
+	else
+		return (2 + temp);
 }
