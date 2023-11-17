@@ -6,7 +6,7 @@
 /*   By: njeanbou <njeanbou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 17:12:27 by njeanbou          #+#    #+#             */
-/*   Updated: 2023/11/15 03:27:22 by njeanbou         ###   ########.fr       */
+/*   Updated: 2023/11/17 05:11:15 by njeanbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 int	ft_printf(const char *str, ...)
 {
 	va_list	arg;
-	int		i;
+	size_t	i;
 	int		len;
+	int		temp;
 
 	if (!str)
 		return (-1);
@@ -26,12 +27,13 @@ int	ft_printf(const char *str, ...)
 	while (str[i])
 	{
 		if (str[i] == '%')
-		{
-			len += convertion(str + i, &arg);
-			i++;
-		}
+			temp = convertion(str + i, &arg, &i);
 		else
-			len += ft_putchar(str[i]);
+			temp = ft_putchar(str[i]);
+		if (temp >= 0)
+			len += temp;
+		else
+			return (-1);
 		i++;
 	}
 	va_end(arg);
@@ -39,30 +41,32 @@ int	ft_printf(const char *str, ...)
 }
 
 //isole le type de variable %s etc
-size_t	convertion(const char *c, va_list *ap)
+ssize_t	convertion(const char *c, va_list *ap, size_t *i)
 {
-	size_t	len;
-
-	len = 0;
+	*i += 1;
 	if (*(c + 1) == 'c')
-		len += ft_putchar((char)va_arg(*ap, int));
+		return (ft_putchar((char)va_arg(*ap, int)));
 	else if (*(c + 1) == 's')
-		len += ft_putstr(va_arg(*ap, const char *));
+		return (ft_putstr(va_arg(*ap, const char *)));
 	else if (*(c + 1) == 'p')
-		len += ft_putvoid(va_arg(*ap, void *));
+		return (ft_putvoid(va_arg(*ap, void *)));
 	else if (*(c + 1) == 'd')
-		len += ft_putnbr(va_arg(*ap, int));
+		return (ft_putnbr(va_arg(*ap, int)));
 	else if (*(c + 1) == 'i')
-		len += ft_putnbr(va_arg(*ap, int));
+		return (ft_putnbr(va_arg(*ap, int)));
 	else if (*(c + 1) == 'u')
-		len += ft_putunbr(va_arg(*ap, unsigned int));
+		return (ft_putunbr(va_arg(*ap, unsigned int)));
 	else if (*(c + 1) == 'x')
-		len += ft_putexa_lower(va_arg(*ap, int));
+		return (ft_putexa_lower(va_arg(*ap, int)));
 	else if (*(c + 1) == 'X')
-		len += ft_putexa_upper(va_arg(*ap, int));
+		return (ft_putexa_upper(va_arg(*ap, int)));
 	else if (*(c + 1) == '%')
-		len += ft_putchar('%');
-	return (len);
+		return (ft_putchar('%'));
+	else
+	{
+		*i -= 1;
+		return (-1);
+	}
 }
 
 size_t	ft_strlen(const char *s)
